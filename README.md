@@ -2,4 +2,4 @@
 
 ### Purpose
 
-Accompanying code for [Shaan](shaankhosla.com)'s 3-hour live training. More coming soon!
+Accompanying code for [Shaan](https://www.shaankhosla.com)'s 3-hour live training. More coming soon!
