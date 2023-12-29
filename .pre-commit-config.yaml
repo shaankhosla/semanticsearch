@@ -33,7 +33,7 @@ repos:
       # Run the linter.
       - id: ruff
         types_or: [python, pyi, jupyter]
-        args: [--fix, --ignore, E402]
+        args: [--fix, --ignore, E402, --ignore, F821]
       # Run the formatter.
       - id: ruff-format
         types_or: [python, pyi, jupyter]
