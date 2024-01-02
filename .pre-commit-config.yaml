@@ -12,7 +12,7 @@ repos:
       - id: check-added-large-files # Blocks commits that add large files. Default limit is 500kB.
         # Can be configured with args, e.g., '--maxkb=1000' to change the limit.
         # exclude: 'your_dir/.*'
-        args: ["--maxkb=5000"]
+        args: ["--maxkb=10000"]
       - id: check-case-conflict # Identifies potential case-insensitive file name conflicts.
       - id: check-ast # Validates the syntax of Python files.
       - id: check-symlinks # Detects broken symlinks.
