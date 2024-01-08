@@ -4,9 +4,8 @@ import requests  # type: ignore
 from dotenv import load_dotenv  # type: ignore
 from langchain.text_splitter import RecursiveCharacterTextSplitter  # type: ignore
 from openai import OpenAI  # type: ignore
-from sklearn.decomposition import PCA  # type: ignore
-
 from postgres import PostgresClient
+from sklearn.decomposition import PCA  # type: ignore
 
 load_dotenv()
 
@@ -27,14 +26,14 @@ for title, url in title_url.items():
 
 # use langchain to do document chunking
 text_splitter = RecursiveCharacterTextSplitter(
-    chunk_size=2000,
-    chunk_overlap=200,
+    chunk_size=500,
+    chunk_overlap=40,
     length_function=len,
     is_separator_regex=False,
 )
 documents = []
 for title, text in title_text_map.items():
-    text_chunks = text_splitter.split_text(text)[:100]
+    text_chunks = text_splitter.split_text(text)[:1000]
 
     embeddings = openai_client.embeddings.create(
         input=text_chunks,
@@ -62,15 +61,16 @@ postgres_client.delete_tables()
 postgres_client.create_tables()
 postgres_client.add_data(data=documents)
 size = postgres_client.get_vector_column_size()
-print(size)
-
+for column, size_bytes in size.items():
+    print(f"Column {column} has size {size_bytes/1048576} MB")
+print("\n")
 
 # search over table
 
-quote = "Think only of the past as its remembrance gives you pleasure."
+quote = "Where was Rod Norquay sitting?"
 quote_embedding = (
     openai_client.embeddings.create(
-        input=text_chunks,
+        input=[quote],
         model="text-embedding-ada-002",
     )
     .data[0]
@@ -81,11 +81,15 @@ results = postgres_client.search_db(
     query_vec=quote_embedding,
     column="large_embedding",
 )
+print("Result using large embeddings:\n")
 print(results[0]["text"])
+print("\n" * 5)
 
 reduced_quote_embedding = pca.transform([quote_embedding])[0]
 results = postgres_client.search_db(
     query_vec=reduced_quote_embedding,
     column="small_embedding",
 )
+print("Result using small embeddings:\n")
 print(results[0]["text"])
+print("\n" * 5)

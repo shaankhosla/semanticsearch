@@ -133,7 +133,7 @@ class PostgresClient:
 
         return results
 
-    def get_vector_column_size(self) -> dict:
+    def get_vector_column_size(self) -> dict[str, int]:
         sql = """
         SELECT SUM(pg_column_size(large_embedding)) as large_embedding_size,
                SUM(pg_column_size(small_embedding)) as small_embedding_size
