@@ -1,4 +1,5 @@
 import os
+import time
 
 import requests  # type: ignore
 from dotenv import load_dotenv  # type: ignore
@@ -77,19 +78,21 @@ quote_embedding = (
     .embedding
 )
 
+st_time = time.time()
 results = postgres_client.search_db(
     query_vec=quote_embedding,
     column="large_embedding",
 )
-print("Result using large embeddings:\n")
+print(f"Result using large embeddings took {time.time() -st_time:.2f}:\n")
 print(results[0]["text"])
 print("\n" * 5)
 
 reduced_quote_embedding = pca.transform([quote_embedding])[0]
+st_time = time.time()
 results = postgres_client.search_db(
     query_vec=reduced_quote_embedding,
     column="small_embedding",
 )
-print("Result using small embeddings:\n")
+print(f"Result using small embeddings took {time.time() -st_time:.2f}:\n")
 print(results[0]["text"])
 print("\n" * 5)
